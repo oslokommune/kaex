@@ -20,37 +20,50 @@ def generateContainer(app):
 
     return {
         'name': 'app',
-        'image': f'{app["image"]}:{app["version"]}',
-        'env': env,
+        'image': f'{app.image["url"]}:{app.image["version"]}',
+        'env': app.env,
         'volumeMounts': volumeMounts
     }
 
 def generateTemplateSpec(app):
+    imagePullSecrets = list()
+
+    if app.image["imagePullSecret"]:
+        imagePullSecrets.append({ 'name': app.image['imagePullSecret'] })
+
     return {
-        'containers': [generateContainer(app)]
+        'containers': [generateContainer(app)],
+        'imagePullSecrets': imagePullSecrets
     }
 
 def generateTemplate(app):
-    metadata = dict()
+    labels = {
+        'app': app.name
+    }
 
     return {
-        'metadata': metadata,
+        'metadata': { 'labels': labels },
         'spec': generateTemplateSpec(app)
     }
 
 def generateDeploymentSpec(app):
     return {
-        'replicas': app.get('replicas', 1),
-        'template': generateTemplate(app)
+        'replicas': app.replicas,
+        'template': generateTemplate(app),
+        'selector': {
+            'matchLabels': {
+                'app': app.name
+            }
+        }
     }
 
 class Deployment(Resource):
     def __init__(self, app):
-        self.apiVersion = 'extensions/v1beta1'
+        self.apiVersion = 'apps/v1'
         self.kind = 'Deployment'
 
         self.metadata = {
-            'name': app['name']
+            'name': app.name
         }
 
         self.spec = generateDeploymentSpec(app)
