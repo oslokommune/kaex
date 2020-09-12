@@ -1,6 +1,4 @@
-from .resource import Resource
-
-class Application(Resource):
+class Application():
     def __init__(self, raw):
         self.name = raw['name']
         self.port = raw['port']

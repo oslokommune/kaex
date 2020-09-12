@@ -1,4 +1,4 @@
-from .resource import Resource
+from kaex.models.resource import Resource
 
 class Service(Resource):
     def __init__(self, app):

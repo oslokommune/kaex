@@ -1,4 +1,4 @@
-from .resource import Resource
+from kaex.models.resource import Resource
 
 def generateContainer(app):
     container = dict()

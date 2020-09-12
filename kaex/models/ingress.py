@@ -1,4 +1,4 @@
-from .resource import Resource
+from kaex.models.resource import Resource
 
 class Ingress(Resource):
     def __init__(self, app):
