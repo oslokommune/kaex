@@ -18,14 +18,14 @@ def generateYAML():
 
     application = Application(yaml.load(sys.stdin))
 
-    deployment = Deployment(application)
-    service = Service(application)
-    ingress = Ingress(application)
+    resources = [Deployment(application),]
 
-    output = '---\n'.join([
-        deployment.toYAML(),
-        service.toYAML()
-    ])
+    if application.service:
+        resources.append(Service(application))
+    if application.ingress:
+        resources.append(Ingress(application))
+
+    output = '\n---\n'.join([ resource.toYAML() for resource in resources ])
 
     return output
 
