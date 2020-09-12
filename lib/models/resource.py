@@ -4,6 +4,14 @@ from io import StringIO
 
 yaml = YAML(typ='safe')
 
+CLASSES = ['Deployment', 'Service', 'Ingress']
+
+def cleanClassNames(string):
+    for item in CLASSES:
+        string = string.replace(f'!{item}', '')
+
+    return string
+
 class Resource():
     def toYAML(self):
         stream = StringIO()
@@ -12,5 +20,7 @@ class Resource():
 
         result = stream.getvalue()
         stream.close
+
+        result = cleanClassNames(result)
 
         return result

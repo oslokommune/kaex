@@ -9,9 +9,9 @@ class Service(Resource):
         self.kind = 'Service'
 
         self.metadata = {
-            'name': app['name']
+            'name': app.name
         }
 
         self.ports = [ { 'port': 80, 'targetPort': app.port } ]
-        self.selector = { 'app': app['name'] }
+        self.selector = { 'app': app.name }
         self.type = 'ClusterIP'

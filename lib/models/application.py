@@ -2,6 +2,7 @@
 class Application:
     def __init__(self, raw):
         self.name = raw['name']
+        self.port = raw['port']
 
         self.image = {
             'uri': raw['image'],
@@ -13,6 +14,7 @@ class Application:
 
         self.ingress = None
         if 'url' in raw:
+
             self.ingress = { 'url': raw['url'] }
 
         self.service = None
@@ -26,3 +28,5 @@ class Application:
                     'name': key,
                     'value': value
                 })
+
+        self.replicas = raw.get('replicas', 1)

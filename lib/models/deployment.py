@@ -8,19 +8,11 @@ yaml = YAML(typ='safe')
 def generateContainer(app):
     container = dict()
 
-    image = ''
-    env = list()
     volumeMounts = list()
-
-    for key, value in app["environment"].items():
-        env.append({
-            'name': key,
-            'value': value
-        })
 
     return {
         'name': 'app',
-        'image': f'{app.image["url"]}:{app.image["version"]}',
+        'image': f'{app.image["uri"]}:{app.image["version"]}',
         'env': app.env,
         'volumeMounts': volumeMounts
     }

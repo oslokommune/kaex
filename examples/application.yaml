@@ -4,6 +4,7 @@ version: 0.0.10
 imagePullSecret: gpkg-pull-token
 
 url: note-service.eme.tuuturu.org
+port: 3000
 
 environment:
   VUE_APP_BASE_URL: https://note-service.eme.tuuturu.org
