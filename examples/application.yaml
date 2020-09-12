@@ -1,0 +1,9 @@
+name: note-service
+image: docker.pkg.github.com/tuuturu/eme-notes-service/notes-service
+version: 0.0.10
+
+url: note-service.eme.tuuturu.org
+
+environment:
+  VUE_APP_BASE_URL: https://note-service.eme.tuuturu.org
+  GATEKEEPER_URL: https://gatekeeper.eme.tuuturu.org
