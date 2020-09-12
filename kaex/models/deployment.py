@@ -15,7 +15,7 @@ def generateContainer(app):
 def generateTemplateSpec(app):
     imagePullSecrets = list()
 
-    if app.image["imagePullSecret"]:
+    if 'imagePullSecret' in app.image:
         imagePullSecrets.append({ 'name': app.image['imagePullSecret'] })
 
     return {
