@@ -1,5 +1,13 @@
 # Kaex
 
+## Installation
+1. `git clone git@github.com:deifyed/kaex.git`
+2. `pip install --user setuptools wheel`
+3. `make build`
+4. `pip install --user dist/kaex-0.0.1.tar.gz`
+
+I'll simplify this by uploading it to PyPi if anyone else ever wants this
+
 ## Usage
 1. `kaex init > application.yaml`
 2. Edit application.yaml to suit your app
