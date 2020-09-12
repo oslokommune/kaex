@@ -80,4 +80,4 @@ def main():
     if args.save:
         save(args.save, result)
 
-    #print(result)
+    print(result)
