@@ -1,9 +1,4 @@
-import sys
-from ruamel.yaml import YAML
-
 from .resource import Resource
-
-yaml = YAML(typ='safe')
 
 def generateContainer(app):
     container = dict()
@@ -59,5 +54,3 @@ class Deployment(Resource):
         }
 
         self.spec = generateDeploymentSpec(app)
-
-yaml.register_class(Deployment)

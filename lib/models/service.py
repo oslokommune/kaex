@@ -1,6 +1,3 @@
-import sys
-from ruamel.yaml import YAML
-
 from .resource import Resource
 
 class Service(Resource):

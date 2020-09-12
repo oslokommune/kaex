@@ -1,20 +1,61 @@
 #!/usr/bin/python
+import argparse
 import sys
 from ruamel.yaml import YAML
 
 from lib.models import Application, Deployment, Ingress, Service
 
-yaml = YAML(typ='safe')
+def initializeApplication():
+    result = ''
 
-application = Application(yaml.load(sys.stdin))
+    with open('./examples/application.yaml') as f:
+        result = f.read()
 
-deployment = Deployment(application)
-service = Service(application)
-ingress = Ingress(application)
+    return result
 
-output = '---\n'.join([
-    deployment.toYAML(),
-    service.toYAML()
-])
+def generateYAML():
+    yaml = YAML(typ='safe')
 
-print(output)
+    application = Application(yaml.load(sys.stdin))
+
+    deployment = Deployment(application)
+    service = Service(application)
+    ingress = Ingress(application)
+
+    output = '---\n'.join([
+        deployment.toYAML(),
+        service.toYAML()
+    ])
+
+    return output
+
+parser = argparse.ArgumentParser(description='Creates Kubernetes resources')
+parser.add_argument('--output', **{
+    'choices': ['stdout', 'files'],
+    'help': 'choose output. Default: stdout'
+})
+
+subparsers = parser.add_subparsers(help='available actions. Default is expand')
+init_parser = subparsers.add_parser('initialize', **{
+    'help': 'initiates a application.yaml file',
+    'aliases': ['init']
+})
+init_parser.set_defaults(action=initializeApplication)
+
+expand_parser = subparsers.add_parser('expand', **{
+    'help': 'expands an application.yaml file into kubernetes resources',
+})
+expand_parser.set_defaults(action=generateYAML)
+
+args = parser.parse_args()
+
+output = 'stdout'
+if args.output:
+    output = args.output
+
+action = args.action if 'action' in args else generateYAML
+
+result = action()
+
+if output == 'stdout':
+    print(result)

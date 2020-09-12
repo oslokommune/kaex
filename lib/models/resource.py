@@ -1,10 +1,9 @@
-import sys
 from ruamel.yaml import YAML
 from io import StringIO
 
 yaml = YAML(typ='safe')
 
-CLASSES = ['Deployment', 'Service', 'Ingress']
+CLASSES = ['Application', 'Deployment', 'Service', 'Ingress']
 
 def cleanClassNames(string):
     for item in CLASSES:
