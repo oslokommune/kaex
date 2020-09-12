@@ -2,7 +2,7 @@
 
 ## Usage
 1. `kaex init > application.yaml`
-2. Edit application.yaml to suit your service
+2. Edit application.yaml to suit your app
 3. `cat application.yaml | kaex | kubectl apply -f`
 
 ## Erm. What was that three-step instructions above for?
