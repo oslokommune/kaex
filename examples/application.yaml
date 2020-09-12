@@ -3,7 +3,7 @@ image: docker.pkg.github.com/tuuturu/eme-notes-service/notes-service
 version: 0.0.10
 imagePullSecret: gpkg-pull-token
 
-url: note-service.eme.tuuturu.org
+url: https://note-service.eme.tuuturu.org
 port: 3000
 
 environment:

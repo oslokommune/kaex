@@ -9,21 +9,25 @@ class Ingress(Resource):
             'name': app.name
         }
 
-        self.rules = [
+        rules = [
             {
                 'host': app.ingress['url'],
                 'http': {
-                    'backend': {
-                        'service': {
-                            'name': app.name,
-                            'port': app.service['targetPort']
+                    'paths': [
+                        {
+                            'backend': {
+                                'serviceName': app.name,
+                                'servicePort': app.service['port']
+                            }
                         }
-                    }
+                    ]
                 }
             }
         ]
 
+        self.spec = { 'rules': rules }
+
         if app.ingress['tls']:
-            self.tls = [
-                { hosts: [ app.ingress['url'] ] }
+            self.spec['tls'] = [
+                { 'hosts': [ app.ingress['url'] ] }
             ]

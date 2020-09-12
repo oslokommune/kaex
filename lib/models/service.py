@@ -12,6 +12,14 @@ class Service(Resource):
             'name': app.name
         }
 
-        self.ports = [ { 'port': 80, 'targetPort': app.port } ]
-        self.selector = { 'app': app.name }
-        self.type = 'ClusterIP'
+        ports = [
+            { 'port': app.service['port'], 'targetPort': app.service['targetPort'] }
+        ]
+        selector = { 'app': app.name }
+        service_type = 'ClusterIP'
+
+        self.spec = {
+            'ports': ports,
+            'selector': selector,
+            'type': service_type
+        }

@@ -14,12 +14,19 @@ class Application:
 
         self.ingress = None
         if 'url' in raw:
+            parts = raw['url'].split('://', 1)
 
-            self.ingress = { 'url': raw['url'] }
+            self.ingress = {
+                'tls': True if parts[0] == 'https' else False,
+                'url': parts[1]
+            }
 
         self.service = None
         if 'port' in raw:
-            self.service = { 'port': raw['port'] }
+            self.service = {
+                'port': 80,
+                'targetPort': raw['port']
+            }
 
         self.env = list()
         if 'environment' in raw:
