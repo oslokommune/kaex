@@ -29,7 +29,7 @@ def save(path, data):
 def initializeApplication():
     result = ''
 
-    url = 'https://raw.githubusercontent.com/deifyed/kaex/master/examples/application.yaml'
+    url = 'https://raw.githubusercontent.com/deifyed/kaex/master/examples/application-minimal.yaml'
     with urllib.request.urlopen(url) as response:
         result = response.read().decode('utf-8')
 
