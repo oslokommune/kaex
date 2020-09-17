@@ -2,7 +2,7 @@ from kaex.models.resource import Resource
 
 class Ingress(Resource):
     def __init__(self, app):
-        self.apiVersion = 'extensions/v1beta1'
+        self.apiVersion = 'networking.k8s.io/v1beta1'
         self.kind = 'Ingress'
 
         self.metadata = {
