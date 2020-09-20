@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='kaex',
-    version='0.0.1',
+    version='0.0.2',
     author='Julius Pedersen',
     author_email='deifyed@ctemplar.com',
     description='Kubernetes Application.yaml EXpander',
