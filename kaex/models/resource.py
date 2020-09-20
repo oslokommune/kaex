@@ -3,7 +3,7 @@ from io import StringIO
 
 yaml = YAML(typ='safe')
 
-CLASSES = ['Application', 'Deployment', 'Service', 'Ingress']
+CLASSES = ['Application', 'Deployment', 'Service', 'Ingress', 'PersistentVolumeClaim']
 
 def cleanClassNames(string):
     for item in CLASSES:

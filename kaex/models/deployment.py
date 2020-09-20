@@ -1,9 +1,16 @@
 from kaex.models.resource import Resource
+from kaex.models.pvc import generatePVCName
+
 
 def generateContainer(app):
     container = dict()
 
     volumeMounts = list()
+    for volume in app.volumes:
+        volumeMounts.append({
+            'mountPath': volume['path'],
+            'name': generatePVCName(app.name, volume['path'])
+        })
 
     return {
         'name': 'app',
@@ -12,16 +19,28 @@ def generateContainer(app):
         'volumeMounts': volumeMounts
     }
 
+
 def generateTemplateSpec(app):
     imagePullSecrets = list()
 
     if 'imagePullSecret' in app.image:
-        imagePullSecrets.append({ 'name': app.image['imagePullSecret'] })
+        imagePullSecrets.append({'name': app.image['imagePullSecret']})
+
+    volumes = list()
+    for volume in app.volumes:
+        volumes.append({
+            'name': generatePVCName(app.name, volume['path']),
+            'persistentVolumeClaim': {
+                'claimName': generatePVCName(app.name, volume['path'])
+            }
+        })
 
     return {
         'containers': [generateContainer(app)],
-        'imagePullSecrets': imagePullSecrets
+        'imagePullSecrets': imagePullSecrets,
+        'volumes': volumes
     }
+
 
 def generateTemplate(app):
     labels = {
@@ -29,9 +48,10 @@ def generateTemplate(app):
     }
 
     return {
-        'metadata': { 'labels': labels },
+        'metadata': {'labels': labels},
         'spec': generateTemplateSpec(app)
     }
+
 
 def generateDeploymentSpec(app):
     return {
@@ -43,6 +63,7 @@ def generateDeploymentSpec(app):
             }
         }
     }
+
 
 class Deployment(Resource):
     def __init__(self, app):

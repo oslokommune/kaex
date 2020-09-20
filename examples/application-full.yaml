@@ -15,3 +15,8 @@ port: 3000
 # The environment your app requires
 environment:
   MY_VARIABLE: my-value
+
+# Volumes to mount
+volumes:
+  - /path/to/mount/volume # Requests 1Gi by default
+  - /path/to/mount/volume: 24Gi

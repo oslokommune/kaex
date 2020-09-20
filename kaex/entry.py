@@ -5,7 +5,8 @@ import sys
 import urllib.request
 from ruamel.yaml import YAML
 
-from kaex.models import Application, Deployment, Ingress, Service
+from kaex.models import Application, Deployment, Ingress, Service, PersistentVolumeClaim
+
 
 def saveResources(path, data):
     resources = data.split('---')
@@ -19,12 +20,14 @@ def saveResources(path, data):
         with open(os.path.join(path, file_name), 'w') as f:
             f.write(resource.strip())
 
+
 def save(path, data):
     if data.find('---') != -1:
         saveResources(path, data)
     else:
         with open(os.path.join(path, 'application.yaml'), 'w') as f:
             f.write(data)
+
 
 def initializeApplication():
     result = ''
@@ -35,21 +38,29 @@ def initializeApplication():
 
     return result
 
+
 def generateYAML():
     yaml = YAML(typ='safe')
 
     application = Application(yaml.load(sys.stdin.read()))
 
-    resources = [Deployment(application),]
+    resources = list()
+
+    if application.volumes:
+        for volume in application.volumes:
+            resources.append(PersistentVolumeClaim(application, volume))
+
+    resources.append(Deployment(application))
 
     if application.service:
         resources.append(Service(application))
     if application.ingress:
         resources.append(Ingress(application))
 
-    output = '\n---\n'.join([ resource.toYAML() for resource in resources ])
+    output = '\n---\n'.join([resource.toYAML() for resource in resources])
 
     return output
+
 
 def main():
     parser = argparse.ArgumentParser(description='Creates Kubernetes resources')
@@ -81,3 +92,7 @@ def main():
         save(args.save, result)
 
     print(result)
+
+
+if __name__ == '__main__':
+    main()
