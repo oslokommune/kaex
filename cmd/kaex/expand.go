@@ -62,8 +62,18 @@ func parseApplication(raw string) (api.Application, error) {
 	return app, nil
 }
 
-func writeResource(w io.Writer, resource interface{}) {
-	fmt.Fprintf(w, "%s\n---", resource)
+func writeResource(w io.Writer, resource interface{}) error {
+	serializedResource, err := yaml.Marshal(resource)
+	if err != nil {
+		return err
+	}
+
+	_, err = fmt.Fprintf(w, "%s\n---\n", serializedResource)
+	if err != nil {
+		return err
+	}
+	
+	return nil
 }
 
 func expand() error {
@@ -79,11 +89,25 @@ func expand() error {
 		return err
 	}
 
-	service, err := yaml.Marshal(api.CreateService(app))
+	service, err := api.CreateService(app)
 	if err != nil {
 		return err
 	}
-	writeResource(&buffer, service)
+	err = writeResource(&buffer, service)
+	if err != nil {
+		return err
+	}
+	
+	ingress, err := api.CreateIngress(app)
+	if err != nil {
+		return err
+	}
+	err = writeResource(&buffer, ingress)
+	if err != nil {
+		return err
+	}
+
+	
 	
 	fmt.Print(buffer.String())
 
