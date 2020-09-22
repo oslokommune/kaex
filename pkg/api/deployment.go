@@ -29,7 +29,7 @@ var (
 	}
 )
 
-func createContainers(app Application) []v12.Container {
+func CreateContainers(app Application) []v12.Container {
 	var envVars []v12.EnvVar
 	for key, value := range app.Environment {
 		envVars = append(envVars,v12.EnvVar{ Name: key, Value: value })
@@ -69,7 +69,7 @@ func CreateDeployment(app Application) (v1.Deployment, error) {
 		"app": app.Name,
 	}
 
-	deployment.Spec.Template.Spec.Containers = createContainers(app)
+	deployment.Spec.Template.Spec.Containers = CreateContainers(app)
 
 	return deployment, nil
 }

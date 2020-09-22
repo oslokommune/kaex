@@ -16,6 +16,7 @@ import (
 
 var (
 	save bool
+	podonly bool
 	expandCmd = &cobra.Command{
 		Use: "expand",
 		Aliases: []string{"exp", "x"},
@@ -34,7 +35,9 @@ var (
 func init() {
 	// Yet to be implemented
 	//expandCmd.Flags().BoolVarP(&save, "save", "s", false, "save the expanded Kubernetes resources to files")
+	expandCmd.Flags().BoolVarP(&podonly, "pod-only", "p", false, "create a pod resource instead of a deployment")
 	save = false
+
 	
 	rootCmd.AddCommand(expandCmd)
 }
@@ -110,9 +113,25 @@ func expand() error {
 			return err
 		}
 	}
-	err = writeResource(&buffer, deployment)
-	if err != nil {
-		return err
+
+	if podonly == false {
+		deployment, err := api.CreateDeployment(app)
+		if err != nil {
+			return err
+		}
+		err = writeResource(&buffer, deployment)
+		if err != nil {
+			return err
+		}
+	} else {
+		pod, err := api.CreatePod(app)
+		if err != nil {
+			return err
+		}
+		err = writeResource(&buffer, pod)
+		if err != nil {
+			return err
+		}
 	}
 
 	fmt.Print(buffer.String())
