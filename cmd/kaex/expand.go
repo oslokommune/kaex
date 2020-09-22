@@ -3,9 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"strings"
+
+	"github.com/spf13/cobra"
+	"sigs.k8s.io/yaml"
+
+	"github.com/deifyed/kaex/pkg/api"
 )
 
 var (
@@ -29,7 +33,7 @@ func init() {
 	// Yet to be implemented
 	//expandCmd.Flags().BoolVarP(&save, "save", "s", false, "save the expanded Kubernetes resources to files")
 	save = false
-
+	
 	rootCmd.AddCommand(expandCmd)
 }
 
@@ -51,7 +55,20 @@ func expand() error {
 		return err
 	}
 	
-	fmt.Println(input)
+	var app api.Application
+	if err = yaml.Unmarshal([]byte(input), &app); err != nil {
+		return err
+	}
+	
+	resources := make([]string, 0)
+	
+	if result, err := yaml.Marshal(api.CreateService(app)); err == nil {
+		resources = append(resources, string(result))
+	} else {
+		return err
+	}
+
+	fmt.Printf("%s", strings.Join(resources, "\n---\n"))
 
 	return nil
 }
