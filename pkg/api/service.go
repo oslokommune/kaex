@@ -6,8 +6,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func CreateService(app Application) v1.Service {
-	pvc := v1.Service{
+func CreateService(app Application) (v1.Service, error) {
+	service := v1.Service{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "Service",
 			APIVersion: "v1",
@@ -31,5 +31,5 @@ func CreateService(app Application) v1.Service {
 		},
 	}
 	
-	return pvc
+	return service, nil
 }
