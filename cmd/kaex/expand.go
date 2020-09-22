@@ -89,27 +89,26 @@ func expand() error {
 		return err
 	}
 
-	service, err := api.CreateService(app)
-	if err != nil {
-		return err
-	}
-	err = writeResource(&buffer, service)
-	if err != nil {
-		return err
-	}
-	
-	ingress, err := api.CreateIngress(app)
-	if err != nil {
-		return err
-	}
-	err = writeResource(&buffer, ingress)
-	if err != nil {
-		return err
+	if app.Port != 0 {
+		service, err := api.CreateService(app)
+		if err != nil {
+			return err
+		}
+		err = writeResource(&buffer, service)
+		if err != nil {
+			return err
+		}
 	}
 
-	deployment, err := api.CreateDeployment(app)
-	if err != nil {
-		return err
+	if app.Url != "" {
+		ingress, err := api.CreateIngress(app)
+		if err != nil {
+			return err
+		}
+		err = writeResource(&buffer, ingress)
+		if err != nil {
+			return err
+		}
 	}
 	err = writeResource(&buffer, deployment)
 	if err != nil {
