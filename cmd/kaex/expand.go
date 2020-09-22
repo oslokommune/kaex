@@ -107,8 +107,15 @@ func expand() error {
 		return err
 	}
 
-	
-	
+	deployment, err := api.CreateDeployment(app)
+	if err != nil {
+		return err
+	}
+	err = writeResource(&buffer, deployment)
+	if err != nil {
+		return err
+	}
+
 	fmt.Print(buffer.String())
 
 	return nil
