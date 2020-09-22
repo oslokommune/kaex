@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -49,26 +51,41 @@ func readStdin() (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
+func parseApplication(raw string) (api.Application, error) {
+	var app api.Application
+
+	err := yaml.Unmarshal([]byte(raw), &app)
+	if err != nil {
+		return api.Application{}, err
+	}
+	
+	return app, nil
+}
+
+func writeResource(w io.Writer, resource interface{}) {
+	fmt.Fprintf(w, "%s\n---", resource)
+}
+
 func expand() error {
+	var buffer bytes.Buffer
+
 	input, err := readStdin()
 	if err != nil {
 		return err
 	}
 	
-	var app api.Application
-	if err = yaml.Unmarshal([]byte(input), &app); err != nil {
-		return err
-	}
-	
-	resources := make([]string, 0)
-	
-	if result, err := yaml.Marshal(api.CreateService(app)); err == nil {
-		resources = append(resources, string(result))
-	} else {
+	app, err := parseApplication(input)
+	if err != nil {
 		return err
 	}
 
-	fmt.Printf("%s", strings.Join(resources, "\n---\n"))
+	service, err := yaml.Marshal(api.CreateService(app))
+	if err != nil {
+		return err
+	}
+	writeResource(&buffer, service)
+	
+	fmt.Print(buffer.String())
 
 	return nil
 }
