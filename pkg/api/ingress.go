@@ -1,8 +1,9 @@
 package api
 
 import (
-	v1 "k8s.io/api/networking/v1"
+	v1 "k8s.io/api/networking/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"net/url"
 	"strings"
 )
@@ -19,13 +20,13 @@ var (
 			Annotations: nil,
 		},
 		Spec: v1.IngressSpec{
-			Rules: []v1.IngressRule{},
+			Rules: []v1.IngressRule{{}},
 		},
 	}
 )
 
 func CreateIngress(app Application) (v1.Ingress, error) {
-	url, err := url.Parse(app.Url)
+	hostUrl, err := url.Parse(app.Url)
 	if err != nil {
 		return v1.Ingress{}, err
 	}
@@ -33,16 +34,29 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 	ingress := ingressTemplate
 	
 	ingress.ObjectMeta.Name = app.Name
-
+	
 	ingress.Spec.Rules = append(ingress.Spec.Rules, v1.IngressRule{
-		Host: url.Host,
+		Host: hostUrl.Host,
+		IngressRuleValue: v1.IngressRuleValue{
+			HTTP: &v1.HTTPIngressRuleValue{
+				Paths: []v1.HTTPIngressPath{{
+					Path:     "/",
+					Backend:  v1.IngressBackend{
+						ServiceName: app.Name,
+						ServicePort: intstr.IntOrString{
+							IntVal: 80,
+						},
+					},
+				}},
+			},
+		},
 	})
 	
-	if url.Scheme == "https" {
+	if hostUrl.Scheme == "https" {
 		ingress.Spec.TLS = []v1.IngressTLS{
 			{
 				Hosts: []string{
-					url.Host,
+					hostUrl.Host,
 				},
 				SecretName: strings.Join([]string{
 					app.Name,
