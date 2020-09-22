@@ -44,3 +44,12 @@ adding stuff as I go.
 ## So a minimalistic Helm starter?
 I don't really need everything Helm offers at all times. Like every other
 abstraction layer it adds complexity.
+
+
+## Roadmap
+
+- [ ] --save to file(s)
+- [ ] Make installable
+- [ ] Support for volumes
+- [ ] Support for secrets
+- [ ] Support for annotations
