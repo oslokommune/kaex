@@ -6,30 +6,31 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func CreateService(app Application) (v1.Service, error) {
-	service := v1.Service{
+var (
+	serviceTemplate = v1.Service{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "Service",
 			APIVersion: "v1",
 		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: app.Name,
-		},
-		Spec:       v1.ServiceSpec{
-			Ports:                    []v1.ServicePort{
-				{
-					Port: 80,
-					TargetPort: intstr.IntOrString{
-						IntVal: app.Port,
-					},
-				},
-			},
-			Selector:                 map[string]string{
-				"app": app.Name,
-			},
-			Type:                     "ClusterIP",
+		ObjectMeta: metav1.ObjectMeta{},
+		Spec: v1.ServiceSpec{
+			Ports: []v1.ServicePort{{ Port: 80 }},
+			Type: "ClusterIP",
 		},
 	}
+)
+
+func CreateService(app Application) (v1.Service, error) {
+	service := serviceTemplate
+	service.ObjectMeta.Name = app.Name
+
+	service.Spec.Selector = map[string]string{
+		"app": app.Name,
+	}
 	
+	service.Spec.Ports[0].TargetPort = intstr.IntOrString{
+		IntVal: app.Port,
+	}
+
 	return service, nil
 }
