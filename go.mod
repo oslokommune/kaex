@@ -1,4 +1,4 @@
-module github.com/deifyed/kaex
+module github.com/oslokommune/kaex
 
 go 1.15
 
