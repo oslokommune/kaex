@@ -12,7 +12,7 @@ func Expand(w io.Writer, app Application, podonly bool) error {
 		if err != nil {
 			return err
 		}
-		err = writeResource(w, service)
+		err = WriteResource(w, service)
 		if err != nil {
 			return err
 		}
@@ -23,7 +23,7 @@ func Expand(w io.Writer, app Application, podonly bool) error {
 		if err != nil {
 			return err
 		}
-		err = writeResource(w, ingress)
+		err = WriteResource(w, ingress)
 		if err != nil {
 			return err
 		}
@@ -34,7 +34,7 @@ func Expand(w io.Writer, app Application, podonly bool) error {
 		if err != nil {
 			return err
 		}
-		err = writeResource(w, deployment)
+		err = WriteResource(w, deployment)
 		if err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ func Expand(w io.Writer, app Application, podonly bool) error {
 		if err != nil {
 			return err
 		}
-		err = writeResource(w, pod)
+		err = WriteResource(w, pod)
 		if err != nil {
 			return err
 		}
@@ -52,7 +52,7 @@ func Expand(w io.Writer, app Application, podonly bool) error {
 	return nil
 }
 
-func writeResource(w io.Writer, resource interface{}) error {
+func WriteResource(w io.Writer, resource interface{}) error {
 	serializedResource, err := yaml.Marshal(resource)
 	if err != nil {
 		return err
