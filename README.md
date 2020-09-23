@@ -4,7 +4,13 @@
 Kayx, like "cakes"
 
 ## Installation
-TBA
+For now;
+1. `git clone git@github.com:oslokommune/kaex.git`
+2. `cd kaex`
+3. `make build`
+4. `make install`
+
+4a. Add `~/.local/bin` to your PATH
 
 ## Usage
 1. `kaex init > application.yaml`
@@ -48,8 +54,8 @@ abstraction layer it adds complexity.
 
 ## Roadmap
 
-- [x] --save to file(s)
-- [ ] Make installable
-- [ ] Support for volumes
-- [ ] Support for secrets
-- [ ] Support for annotations
+- [x] --save to file(s)
+- [ ] Make installable
+- [ ] Support for volumes
+- [ ] Support for secrets
+- [ ] Support for annotations
