@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/yaml"
 
-	"github.com/deifyed/kaex/pkg/api"
+	"github.com/oslokommune/kaex/pkg/api"
 )
 
 var (
