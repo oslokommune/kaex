@@ -48,7 +48,7 @@ abstraction layer it adds complexity.
 
 ## Roadmap
 
-- [ ] --save to file(s)
+- [x] --save to file(s)
 - [ ] Make installable
 - [ ] Support for volumes
 - [ ] Support for secrets

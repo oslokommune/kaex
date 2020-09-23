@@ -4,14 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 
-	"github.com/spf13/cobra"
-	"sigs.k8s.io/yaml"
-
 	"github.com/oslokommune/kaex/pkg/api"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -23,7 +21,31 @@ var (
 		Short: "expands an application.yaml from stdin (default)",
 		Long: "expands an application.yaml from stdin",
 		RunE: func(_ *cobra.Command, args []string) error {
-			if err := expand(); err != nil {
+			var kubernetesResourceBuffer bytes.Buffer
+
+			input, err := readStdin()
+			if err != nil {
+				return err
+			}
+			
+			app, err := api.ParseApplication(input)
+			if err != nil {
+				return err
+			}
+			
+			err = api.Expand(&kubernetesResourceBuffer, app, podonly)
+			if err != nil {
+				return err
+			}
+			
+			if save == false {
+				fmt.Println(kubernetesResourceBuffer.String())
+				
+				return nil
+			}
+			
+			err = writeToFile(app.Name + ".yaml", kubernetesResourceBuffer)
+			if err != nil {
 				return err
 			}
 
@@ -33,12 +55,9 @@ var (
 )
 
 func init() {
-	// Yet to be implemented
-	//expandCmd.Flags().BoolVarP(&save, "save", "s", false, "save the expanded Kubernetes resources to files")
+	expandCmd.Flags().BoolVarP(&save, "save", "s", false, "save the expanded Kubernetes resources to files")
 	expandCmd.Flags().BoolVarP(&podonly, "pod-only", "p", false, "create a pod resource instead of a deployment")
-	save = false
 
-	
 	rootCmd.AddCommand(expandCmd)
 }
 
@@ -54,87 +73,12 @@ func readStdin() (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
-func parseApplication(raw string) (api.Application, error) {
-	var app api.Application
-
-	err := yaml.Unmarshal([]byte(raw), &app)
-	if err != nil {
-		return api.Application{}, err
-	}
+func writeToFile(path string, buffer bytes.Buffer) error {
+	err := ioutil.WriteFile(path, buffer.Bytes(), 0644)
 	
-	return app, nil
-}
-
-func writeResource(w io.Writer, resource interface{}) error {
-	serializedResource, err := yaml.Marshal(resource)
-	if err != nil {
-		return err
-	}
-
-	_, err = fmt.Fprintf(w, "%s\n---\n", serializedResource)
 	if err != nil {
 		return err
 	}
 	
-	return nil
-}
-
-func expand() error {
-	var buffer bytes.Buffer
-
-	input, err := readStdin()
-	if err != nil {
-		return err
-	}
-	
-	app, err := parseApplication(input)
-	if err != nil {
-		return err
-	}
-
-	if app.Port != 0 {
-		service, err := api.CreateService(app)
-		if err != nil {
-			return err
-		}
-		err = writeResource(&buffer, service)
-		if err != nil {
-			return err
-		}
-	}
-
-	if app.Url != "" {
-		ingress, err := api.CreateIngress(app)
-		if err != nil {
-			return err
-		}
-		err = writeResource(&buffer, ingress)
-		if err != nil {
-			return err
-		}
-	}
-
-	if podonly == false {
-		deployment, err := api.CreateDeployment(app)
-		if err != nil {
-			return err
-		}
-		err = writeResource(&buffer, deployment)
-		if err != nil {
-			return err
-		}
-	} else {
-		pod, err := api.CreatePod(app)
-		if err != nil {
-			return err
-		}
-		err = writeResource(&buffer, pod)
-		if err != nil {
-			return err
-		}
-	}
-
-	fmt.Print(buffer.String())
-
 	return nil
 }
