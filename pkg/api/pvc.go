@@ -8,17 +8,19 @@ import (
 	"strings"
 )
 
-func generateDefaultPVC() v1.PersistentVolume {
-	return v1.PersistentVolume{
+func generateDefaultPVC() v1.PersistentVolumeClaim {
+	return v1.PersistentVolumeClaim{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "PersistentVolumeClaim",
 			APIVersion: "v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{},
-		Spec:       v1.PersistentVolumeSpec{
-			Capacity:  					   v1.ResourceList{
-				v1.ResourceRequestsStorage: resource.Quantity{
-					Format: "1Gi",
+		Spec:       v1.PersistentVolumeClaimSpec{
+			Resources: v1.ResourceRequirements{
+				Requests: v1.ResourceList{
+					v1.ResourceRequestsStorage: resource.Quantity{
+						Format: "1Gi",
+					},
 				},
 			},
 			AccessModes:                   []v1.PersistentVolumeAccessMode{v1.ReadWriteMany},
@@ -32,22 +34,22 @@ func CreatePVCName(app Application, path string) string {
 	return fmt.Sprintf("%s-%s", app.Name, cleanPath)
 }
 
-func CreatePersistentVolume(app Application, path string, size string) (v1.PersistentVolume, error) {
+func CreatePersistentVolume(app Application, path string, size string) (v1.PersistentVolumeClaim, error) {
 	volume := generateDefaultPVC()
 	
 	volume.ObjectMeta.Name = CreatePVCName(app, path)
 	volume.ObjectMeta.Namespace = app.Namespace
 	
-	capacity, err := createStorageCapacity(size)
+	capacity, err := createStorageRequest(size)
 	if err != nil {
-		return v1.PersistentVolume{}, err
+		return v1.PersistentVolumeClaim{}, err
 	}
-	volume.Spec.Capacity = capacity
+	volume.Spec.Resources.Requests = capacity
 	
 	return volume, nil
 }
 
-func createStorageCapacity(requestSize string) (v1.ResourceList, error) {
+func createStorageRequest(requestSize string) (v1.ResourceList, error) {
 	quantity, err := resource.ParseQuantity("1Gi")
 	if requestSize != "" {
 		quantity, err = resource.ParseQuantity(requestSize)
@@ -58,6 +60,6 @@ func createStorageCapacity(requestSize string) (v1.ResourceList, error) {
 	}
 	
 	return v1.ResourceList{
-		v1.ResourceRequestsStorage: quantity,
+		v1.ResourceStorage: quantity,
 	}, nil
 }
