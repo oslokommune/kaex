@@ -2,6 +2,10 @@ package api
 
 import "sigs.k8s.io/yaml"
 
+type IngressConfig struct {
+	Annotations map[string]string
+}
+
 type Application struct {
 	Name string
 	Namespace string
@@ -17,6 +21,8 @@ type Application struct {
 	
 	Environment map[string]string
 	Volumes []map[string]string
+	
+	Ingress IngressConfig
 }
 
 func ParseApplication(raw string) (Application, error) {

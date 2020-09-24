@@ -35,6 +35,7 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 	ingress.ObjectMeta.Namespace = app.Namespace
 	
 	ingress.ObjectMeta.Name = app.Name
+	ingress.ObjectMeta.Annotations = app.Ingress.Annotations
 	
 	ingress.Spec.Rules = append(ingress.Spec.Rules, v1.IngressRule{
 		Host: hostUrl.Host,
