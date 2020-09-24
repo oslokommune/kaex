@@ -17,6 +17,22 @@ func Expand(w io.Writer, app Application, podonly bool) error {
 			return err
 		}
 	}
+	
+	if len(app.Volumes) != 0 {
+		for _, volume := range app.Volumes {
+			for path, size := range volume {
+				volume, err := CreatePersistentVolume(app, path, size)
+				if err != nil {
+					return err
+				}
+				
+				err = WriteResource(w, volume)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
 
 	if app.Url != "" {
 		ingress, err := CreateIngress(app)

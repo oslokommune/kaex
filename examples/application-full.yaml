@@ -20,5 +20,5 @@ environment:
 
 # Volumes to mount
 volumes:
-  - /path/to/mount/volume # Requests 1Gi by default
+  - /path/to/mount/volume: # Requests 1Gi by default
   - /path/to/mount/volume: 24Gi
