@@ -57,5 +57,5 @@ abstraction layer it adds complexity.
 - [x] --save to file(s)
 - [x] Make installable
 - [x] Support for volumes
+- [x] Support for annotations
 - [ ] Support for secrets
-- [ ] Support for annotations
