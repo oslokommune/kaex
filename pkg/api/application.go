@@ -4,6 +4,8 @@ import "sigs.k8s.io/yaml"
 
 type Application struct {
 	Name string
+	Namespace string
+	
 	Image string
 	Version string
 	ImagePullSecret string

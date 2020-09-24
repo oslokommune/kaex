@@ -49,6 +49,7 @@ func CreateDeployment(app Application) (v1.Deployment, error) {
 	deployment := deploymentTemplate
 	
 	deployment.ObjectMeta.Name = app.Name
+	deployment.ObjectMeta.Namespace = app.Namespace
 	
 	if app.Replicas == 0 {
 		app.Replicas = 1
