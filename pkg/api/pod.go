@@ -30,5 +30,7 @@ func CreatePod(app Application) (v1.Pod, error) {
 		pod.Spec.ImagePullSecrets = []v1.LocalObjectReference{{Name: app.ImagePullSecret}}
 	}
 	
+	pod.Spec.Volumes = CreateVolumes(app)
+	
 	return pod, nil
 }

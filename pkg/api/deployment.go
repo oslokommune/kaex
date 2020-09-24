@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,15 +35,46 @@ func CreateContainers(app Application) []v12.Container {
 	for key, value := range app.Environment {
 		envVars = append(envVars,v12.EnvVar{ Name: key, Value: value })
 	}
+	
+	volumeMounts := make([]v12.VolumeMount, len(app.Volumes))
+	for index, volume := range app.Volumes {
+		for path := range volume {
+			volumeMounts[index] = v12.VolumeMount{
+				Name: CreatePVCName(app, path),
+				MountPath: path,
+			}
+		}
+	}
 
 	containers := []v12.Container{{
 		Name: app.Name,
-		Image: app.Image + ":" + app.Version,
+		Image: fmt.Sprintf("%s:%s", app.Image, app.Version),
 		Env: envVars,
-		VolumeMounts: nil,
+		VolumeMounts: volumeMounts,
 	}}
 	
 	return containers
+}
+
+func CreateVolumes(app Application) []v12.Volume {
+	volumes := make([]v12.Volume, len(app.Volumes))
+	
+	for index, volume := range app.Volumes {
+		for path := range volume {
+			volumes[index] = v12.Volume{
+				Name:         CreatePVCName(app, path),
+				VolumeSource: v12.VolumeSource{
+					PersistentVolumeClaim: &v12.PersistentVolumeClaimVolumeSource{
+						ClaimName: CreatePVCName(app, path),
+					},
+				},
+			}
+
+			break
+		}
+	}
+	
+	return volumes
 }
 
 func CreateDeployment(app Application) (v1.Deployment, error) {
@@ -70,6 +102,7 @@ func CreateDeployment(app Application) (v1.Deployment, error) {
 		"app": app.Name,
 	}
 
+	deployment.Spec.Template.Spec.Volumes = CreateVolumes(app)
 	deployment.Spec.Template.Spec.Containers = CreateContainers(app)
 
 	return deployment, nil

@@ -16,6 +16,7 @@ type Application struct {
 	Replicas int32
 	
 	Environment map[string]string
+	Volumes []map[string]string
 }
 
 func ParseApplication(raw string) (Application, error) {
