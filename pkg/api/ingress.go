@@ -32,6 +32,7 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 	}
 	
 	ingress := ingressTemplate
+	ingress.ObjectMeta.Namespace = app.Namespace
 	
 	ingress.ObjectMeta.Name = app.Name
 	

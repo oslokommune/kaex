@@ -22,7 +22,9 @@ var (
 
 func CreateService(app Application) (v1.Service, error) {
 	service := serviceTemplate
+	
 	service.ObjectMeta.Name = app.Name
+	service.ObjectMeta.Namespace = app.Namespace
 
 	service.Spec.Selector = map[string]string{
 		"app": app.Name,

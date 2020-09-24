@@ -22,6 +22,8 @@ func CreatePod(app Application) (v1.Pod, error) {
 	pod := podTemplate
 	
 	pod.ObjectMeta.Name = app.Name
+	pod.ObjectMeta.Namespace = app.Namespace
+
 	pod.Spec.Containers = CreateContainers(app)
 	
 	if app.ImagePullSecret != "" {
