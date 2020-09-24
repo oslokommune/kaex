@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-var (
-	ingressTemplate = v1.Ingress{
+func generateDefaultIngress() v1.Ingress {
+	return v1.Ingress{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Ingress",
 			APIVersion: "networking.k8s.io/v1beta1",
@@ -23,7 +23,7 @@ var (
 			Rules: []v1.IngressRule{{}},
 		},
 	}
-)
+}
 
 func CreateIngress(app Application) (v1.Ingress, error) {
 	hostUrl, err := url.Parse(app.Url)
@@ -31,7 +31,7 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 		return v1.Ingress{}, err
 	}
 	
-	ingress := ingressTemplate
+	ingress := generateDefaultIngress()
 	ingress.ObjectMeta.Namespace = app.Namespace
 	
 	ingress.ObjectMeta.Name = app.Name

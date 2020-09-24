@@ -55,7 +55,7 @@ abstraction layer it adds complexity.
 ## Roadmap
 
 - [x] --save to file(s)
-- [ ] Make installable
-- [ ] Support for volumes
+- [x] Make installable
+- [x] Support for volumes
 - [ ] Support for secrets
 - [ ] Support for annotations
