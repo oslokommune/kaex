@@ -7,8 +7,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var (
-	deploymentTemplate = v1.Deployment{
+func generateDefaultDeployment() v1.Deployment {
+	return v1.Deployment{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "Deployment",
 			APIVersion: "apps/v1",
@@ -28,7 +28,7 @@ var (
 			},
 		},
 	}
-)
+}
 
 func CreateContainers(app Application) []v12.Container {
 	var envVars []v12.EnvVar
@@ -78,7 +78,7 @@ func CreateVolumes(app Application) []v12.Volume {
 }
 
 func CreateDeployment(app Application) (v1.Deployment, error) {
-	deployment := deploymentTemplate
+	deployment := generateDefaultDeployment()
 	
 	deployment.ObjectMeta.Name = app.Name
 	deployment.ObjectMeta.Namespace = app.Namespace

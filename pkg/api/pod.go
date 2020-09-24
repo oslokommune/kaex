@@ -5,8 +5,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var (
-	podTemplate = v1.Pod{
+func generateDefaultPod() v1.Pod {
+	return v1.Pod{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "Pod",
 			APIVersion: "v1",
@@ -16,10 +16,10 @@ var (
 			Volumes:                       nil,
 		},
 	}
-)
+}
 
 func CreatePod(app Application) (v1.Pod, error) {
-	pod := podTemplate
+	pod := generateDefaultPod()
 	
 	pod.ObjectMeta.Name = app.Name
 	pod.ObjectMeta.Namespace = app.Namespace

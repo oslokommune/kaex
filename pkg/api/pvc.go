@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-var (
-	volumeTemplate = v1.PersistentVolume{
+func generateDefaultPVC() v1.PersistentVolume {
+	return v1.PersistentVolume{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "PersistentVolumeClaim",
 			APIVersion: "v1",
@@ -24,7 +24,7 @@ var (
 			AccessModes:                   []v1.PersistentVolumeAccessMode{v1.ReadWriteMany},
 		},
 	}
-)
+}
 
 func CreatePVCName(app Application, path string) string {
 	cleanPath := strings.Replace(path, "/", "", -1)
@@ -33,7 +33,7 @@ func CreatePVCName(app Application, path string) string {
 }
 
 func CreatePersistentVolume(app Application, path string, size string) (v1.PersistentVolume, error) {
-	volume := volumeTemplate
+	volume := generateDefaultPVC()
 	
 	volume.ObjectMeta.Name = CreatePVCName(app, path)
 	volume.ObjectMeta.Namespace = app.Namespace

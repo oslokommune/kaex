@@ -6,8 +6,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-var (
-	serviceTemplate = v1.Service{
+func generateDefaultService() v1.Service {
+	return v1.Service{
 		TypeMeta:   metav1.TypeMeta{
 			Kind:       "Service",
 			APIVersion: "v1",
@@ -18,10 +18,10 @@ var (
 			Type: "ClusterIP",
 		},
 	}
-)
+}
 
 func CreateService(app Application) (v1.Service, error) {
-	service := serviceTemplate
+	service := generateDefaultService()
 	
 	service.ObjectMeta.Name = app.Name
 	service.ObjectMeta.Namespace = app.Namespace
