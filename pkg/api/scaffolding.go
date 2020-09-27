@@ -5,26 +5,76 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path"
 	"time"
 )
 
+const (
+	REPO_EXAMPLE_BASE_URL = "https://raw.githubusercontent.com/oslokommune/kaex/master/examples"
+)
+
 func FetchMinimalExample(w io.Writer) error {
-	url := "https://raw.githubusercontent.com/deifyed/kaex/master/examples/application-minimal.yaml"
-	
-	example, err := fetchExample(url)
+	exampleFileName := "application-minimal.yaml"
+
+	err := fetchExample(w, exampleFileName)
 	if err != nil {
+		err = fmt.Errorf("unable to fetch %s: %w", exampleFileName, err)
+
 		return err
-	} 
-	
-	fmt.Fprintf(w, example)
-	
+	}
+
 	return nil
 }
 
 func FetchFullExample(w io.Writer) error {
-	url := "https://raw.githubusercontent.com/deifyed/kaex/master/examples/application-full.yaml"
+	exampleFileName := "application-full.yaml"
 
-	example, err := fetchExample(url)
+	err := fetchExample(w, exampleFileName)
+	if err != nil {
+		err = fmt.Errorf("unable to fetch %s: %w", exampleFileName, err)
+
+		return err
+	}
+
+	return nil
+}
+
+func fetchLocalExample(name string) (string, error) {
+	configPath, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	targetPath := path.Join(configPath, fmt.Sprintf("kaex/%s", name))
+	_, err = os.Stat(targetPath)
+	if err != nil {
+		err = fmt.Errorf("no such file/path \"%s\": %w", targetPath, err)
+
+		return "", err
+	}
+
+	data, err := ioutil.ReadFile(targetPath)
+	if err != nil {
+		err = fmt.Errorf("error while reading file: %w", err)
+
+		return "", err
+	}
+
+	return string(data), nil
+}
+
+func fetchExample(w io.Writer, name string) error {
+	example, err := fetchLocalExample(name)
+	if err == nil {
+		fmt.Fprintf(w, example)
+
+		return nil
+	}
+
+	url := fmt.Sprintf("%s/%s", REPO_EXAMPLE_BASE_URL, name)
+
+	example, err = fetchURL(url)
 	if err != nil {
 		return err
 	}
@@ -34,7 +84,7 @@ func FetchFullExample(w io.Writer) error {
 	return nil
 }
 
-func fetchExample(url string) (string, error) {
+func fetchURL(url string) (string, error) {
 	spaceClient := http.Client{
 		Timeout: 2 * time.Second,
 	}
