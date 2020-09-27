@@ -15,11 +15,11 @@ const (
 )
 
 func FetchMinimalExample(w io.Writer) error {
-	name := "application-minimal.yaml"
+	exampleFileName := "application-minimal.yaml"
 
-	err := fetchExample(w, name)
+	err := fetchExample(w, exampleFileName)
 	if err != nil {
-		err = fmt.Errorf("unable to fetch %s: %w", name, err)
+		err = fmt.Errorf("unable to fetch %s: %w", exampleFileName, err)
 
 		return err
 	}
@@ -28,11 +28,11 @@ func FetchMinimalExample(w io.Writer) error {
 }
 
 func FetchFullExample(w io.Writer) error {
-	name := "application-full.yaml"
+	exampleFileName := "application-full.yaml"
 
-	err := fetchExample(w, name)
+	err := fetchExample(w, exampleFileName)
 	if err != nil {
-		err = fmt.Errorf("unable to fetch %s: %w", name, err)
+		err = fmt.Errorf("unable to fetch %s: %w", exampleFileName, err)
 
 		return err
 	}
