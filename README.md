@@ -15,7 +15,7 @@ For now;
 ## Usage
 1. `kaex init > application.yaml`
 2. Edit application.yaml to suit your app
-3. `cat application.yaml | kaex | kubectl apply -f`
+3. `cat application.yaml | kaex expand | kubectl apply -f`
 
 ## Erm. What was that three-step instructions above for?
 Sorry! I assumed you.. Never mind. I'll explain.
