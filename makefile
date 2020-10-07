@@ -7,7 +7,7 @@ run:
 	@go build -o build/kaex cmd/kaex/*.go
 
 install:
-	go install cmd/kaex/*.go
+	cd cmd/kaex && go install
 
 clean:
 	@rm -r ./build

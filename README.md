@@ -7,10 +7,9 @@ Kayx, like "cakes"
 For now;
 1. `git clone git@github.com:oslokommune/kaex.git`
 2. `cd kaex`
-3. `make build`
-4. `make install`
+3. `make install`
 
-4a. Add `~/.local/bin` to your PATH
+P.S.: Remember to add GOBIN to your path: `export PATH=${PATH}:$(go env GOBIN)`
 
 ## Usage
 1. `kaex init > application.yaml`
