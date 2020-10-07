@@ -109,3 +109,26 @@ func fetchURL(url string) (string, error) {
 
 	return string(body), nil
 }
+
+func GenerateDebugger(writer io.Writer) error {
+	app := Application{
+		Name:            "debugger",
+		Image:           "markeijsermans/debug",
+		Version:         "kitchen-sink",
+		Replicas:        1,
+	}
+
+	pod, err := CreatePod(app)
+	if err != nil {
+		return fmt.Errorf("error creating debugger pod: %w", err)
+	}
+
+	pod.Spec.Containers[0].Command = []string{"/bin/sh", "-c", "sleep 3600"}
+
+	err = WriteResource(writer, pod)
+	if err != nil {
+		return fmt.Errorf("error writing resource to writer: %w", err)
+	}
+
+	return nil
+}
