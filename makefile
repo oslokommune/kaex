@@ -3,12 +3,11 @@
 run:
 	@go run cmd/kaex/*.go
 
-build:
+./build:
 	@go build -o build/kaex cmd/kaex/*.go
 
 install:
-	mkdir -p ~/.local/bin
-	cp ./build/kaex ~/.local/bin/kaex
+	go install cmd/kaex/*.go
 
 clean:
 	@rm -r ./build
