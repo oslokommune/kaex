@@ -7,38 +7,40 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	fullExample bool
-	initCmd = &cobra.Command{
+var templateName string
+
+const templateNameHelp = `Define what template to use. Kaex will first look in ~/.config/kaex/templates, then in
+https://github.com/oslokommune/kaex/tree/master/templates
+`
+
+const initializeHelpLong = `scaffolds a template. By default, kaex init will scaffold an application.yaml`
+
+func buildInitializeCommand(kaex api.Kaex) *cobra.Command {
+	cmd := &cobra.Command{
 		Use: "initialize",
 		Aliases: []string{"init", "i"},
 		Short: "scaffolds a template application.yaml",
-		Long: `scaffolds a template application.yaml. Use --full to enhance the template with more than only the required settings.
-		`,
+		Long: `scaffolds a template application.yaml.`,
 		RunE: func(_ *cobra.Command, args []string) error {
-			var err error
-			
 			var buffer bytes.Buffer
-			
-			if fullExample {
-				err = api.FetchFullExample(&buffer)
-			} else {
-				err = api.FetchMinimalExample(&buffer)
-			}
-			
+
+			err := api.FetchTemplate(kaex, &buffer, templateName)
 			if err != nil {
-				return err
+				return fmt.Errorf("error fetching template: %w", err)
 			}
-			
-			fmt.Println(buffer.String())
+
+			_, err = buffer.WriteTo(kaex.Out)
+			if err != nil {
+				return fmt.Errorf("error writing to output stream: %w", err)
+			}
 
 			return nil
 		},
 	}
-)
 
-func init() {
-	initCmd.Flags().BoolVarP(&fullExample, "full", "f", false, "use full template to scaffold rather than the minimal template")
+	flags := cmd.Flags()
 
-	rootCmd.AddCommand(initCmd)
+	flags.StringVarP(&templateName, "template", "t", "application.yaml", templateNameHelp)
+
+	return cmd
 }
