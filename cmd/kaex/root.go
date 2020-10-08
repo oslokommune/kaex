@@ -30,6 +30,7 @@ func Execute() error {
 	}
 
 	rootCmd.AddCommand(buildInitializeCommand(kaex))
+	rootCmd.AddCommand(buildExpandCommand(kaex))
 
 	return rootCmd.Execute()
 }
