@@ -1,84 +1,79 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"strings"
-
 	"github.com/oslokommune/kaex/pkg/api"
 	"github.com/spf13/cobra"
+	"io"
+	"os"
 )
 
-var (
-	save bool
-	podonly bool
-	expandCmd = &cobra.Command{
-		Use: "expand",
+type ExpandOptions struct {
+	Save bool
+	PodOnly bool
+}
+
+func buildExpandCommand(kaex api.Kaex) *cobra.Command {
+	options := &ExpandOptions{
+		Save:    false,
+		PodOnly: false,
+	}
+
+	cmd := &cobra.Command{
+		Use:     "expand",
 		Aliases: []string{"exp", "x"},
-		Short: "expands an application.yaml from stdin (default)",
-		Long: "expands an application.yaml from stdin",
+		Short:   "expands an application.yaml from stdin (default)",
+		Long:    "expands an application.yaml from stdin",
 		RunE: func(_ *cobra.Command, args []string) error {
+			app, err := api.ParseApplication(kaex.In)
+			if err != nil {
+				return err
+			}
+
 			var kubernetesResourceBuffer bytes.Buffer
 
-			input, err := readStdin()
-			if err != nil {
-				return err
-			}
-			
-			app, err := api.ParseApplication(input)
-			if err != nil {
-				return err
-			}
-			
-			err = api.Expand(&kubernetesResourceBuffer, app, podonly)
-			if err != nil {
-				return err
-			}
-			
-			if save == false {
-				fmt.Println(kubernetesResourceBuffer.String())
-				
-				return nil
-			}
-			
-			err = writeToFile(app.Name + ".yaml", kubernetesResourceBuffer)
+			err = api.Expand(&kubernetesResourceBuffer, app, options.PodOnly)
 			if err != nil {
 				return err
 			}
 
-			return nil
+			err = write(kaex, app, &kubernetesResourceBuffer, options.Save)
+
+			return err
 		},
 	}
-)
 
-func init() {
-	expandCmd.Flags().BoolVarP(&save, "save", "s", false, "save the expanded Kubernetes resources to files")
-	expandCmd.Flags().BoolVarP(&podonly, "pod-only", "p", false, "create a pod resource instead of a deployment")
+	flags := cmd.Flags()
 
-	rootCmd.AddCommand(expandCmd)
+	flags.BoolVarP(&options.Save, "save", "s", false, "save the expanded Kubernetes resources to files")
+	flags.BoolVarP(&options.PodOnly, "pod-only", "p", false, "create a pod resource instead of a deployment")
+
+	return cmd
 }
 
-func readStdin() (string, error) {
-	lines := make([]string, 0)
-	scanner := bufio.NewScanner(os.Stdin)
+func write(kaex api.Kaex, app api.Application, reader io.Reader, asFile bool) error {
+	var (
+		writer io.Writer
+		err error
+	)
 
-	for scanner.Scan() {
-		text := scanner.Text()
-		lines = append(lines, text)
+	switch asFile {
+	case false:
+		writer = kaex.Out
+	case true:
+		filename := fmt.Sprintf("%s.yaml", app.Name)
+
+		writer, err = os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			return fmt.Errorf("error opening file %s: %w", filename, err)
+		}
 	}
-	
-	return strings.Join(lines, "\n"), nil
-}
 
-func writeToFile(path string, buffer bytes.Buffer) error {
-	err := ioutil.WriteFile(path, buffer.Bytes(), 0644)
-	
+	_, err = io.Copy(writer, reader)
 	if err != nil {
-		return err
+		return fmt.Errorf("error writing: %w", err)
 	}
-	
+
 	return nil
 }
