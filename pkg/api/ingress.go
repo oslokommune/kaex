@@ -20,7 +20,7 @@ func generateDefaultIngress() v1.Ingress {
 			Annotations: nil,
 		},
 		Spec: v1.IngressSpec{
-			Rules: []v1.IngressRule{{}},
+			Rules: make([]v1.IngressRule, 1),
 		},
 	}
 }
@@ -30,14 +30,14 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 	if err != nil {
 		return v1.Ingress{}, err
 	}
-	
+
 	ingress := generateDefaultIngress()
 	ingress.ObjectMeta.Namespace = app.Namespace
-	
+
 	ingress.ObjectMeta.Name = app.Name
 	ingress.ObjectMeta.Annotations = app.Ingress.Annotations
-	
-	ingress.Spec.Rules = append(ingress.Spec.Rules, v1.IngressRule{
+
+	ingress.Spec.Rules[0] = v1.IngressRule{
 		Host: hostUrl.Host,
 		IngressRuleValue: v1.IngressRuleValue{
 			HTTP: &v1.HTTPIngressRuleValue{
@@ -52,8 +52,8 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 				}},
 			},
 		},
-	})
-	
+	}
+
 	if hostUrl.Scheme == "https" {
 		ingress.Spec.TLS = []v1.IngressTLS{
 			{
