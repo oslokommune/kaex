@@ -78,18 +78,16 @@ func fetchLocalTemplate(kaex Kaex, writer io.Writer, name string) error {
 }
 
 func fetchRemoteTemplate(kaex Kaex, w io.Writer, name string) error {
-	rawRepoURL, err := url.Parse(kaex.RepoURL)
+	rawRepoURL, err := url.Parse(kaex.TemplatesDirURL)
 	if err != nil {
-		return fmt.Errorf("malformed url %s: %w", kaex.RepoURL, err)
+		return fmt.Errorf("malformed url %s: %w", kaex.TemplatesDirURL, err)
 	}
-
-	rawRepoURL.Path = path.Join(rawRepoURL.Path, "examples")
 
 	mainURL, _ := url.Parse(rawRepoURL.String())
 	alternativeURL, _ := url.Parse(rawRepoURL.String())
 
-	mainURL.Path = path.Join(mainURL.Path, name)
-	alternativeURL.Path = path.Join(alternativeURL.Path, fmt.Sprintf("%s.yaml", name))
+	mainURL.Path = path.Join(mainURL.Path, fmt.Sprintf("%s.yaml", name))
+	alternativeURL.Path = path.Join(alternativeURL.Path, name)
 
 	mainTemplate, mainErr := fetchURL(mainURL.String())
 	alternativeTemplate, alternativeErr := fetchURL(alternativeURL.String())

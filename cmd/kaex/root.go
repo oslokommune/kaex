@@ -21,7 +21,7 @@ func Execute() error {
 		Out:        rootCmd.OutOrStdout(),
 		In:         rootCmd.InOrStdin(),
 
-		RepoURL:    "https://raw.githubusercontent.com/oslokommune/kaex/master",
+		TemplatesDirURL:    "https://raw.githubusercontent.com/oslokommune/kaex/master/templates",
 	}
 
 	configPath, err := os.UserConfigDir()

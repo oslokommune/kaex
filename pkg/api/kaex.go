@@ -8,5 +8,5 @@ type Kaex struct {
 	In io.Reader
 
 	ConfigPath string
-	RepoURL string
+	TemplatesDirURL string
 }
