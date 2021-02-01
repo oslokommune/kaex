@@ -3,6 +3,7 @@ module github.com/oslokommune/kaex
 go 1.15
 
 require (
+	github.com/sebdah/goldie/v2 v2.5.3
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.4.0
 	k8s.io/api v0.18.4

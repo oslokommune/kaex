@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dummy-app
+  namespace: dummyns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dummy-app
+  template:
+    metadata:
+      labels:
+        app: dummy-app
+    spec:
+      containers:
+      - env:
+        - name: DUMMY_VAR
+          value: avalue
+        - name: DUMMY_HOST
+          value: somehost
+        image: dummygres:8.0.1
+        name: dummy-app
+      imagePullSecrets:
+      - name: so-secret
+
+---
+
