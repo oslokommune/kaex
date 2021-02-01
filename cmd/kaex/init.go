@@ -24,10 +24,10 @@ different scaffolds for different environments and scaffold them for example by 
 
 func buildInitializeCommand(kaex api.Kaex) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "initialize",
+		Use:     "initialize",
 		Aliases: []string{"init", "i"},
-		Short: "scaffolds a template",
-		Long: initializeHelpLong,
+		Short:   "scaffolds a template",
+		Long:    initializeHelpLong,
 		RunE: func(_ *cobra.Command, args []string) error {
 			var buffer bytes.Buffer
 

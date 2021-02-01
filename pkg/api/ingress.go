@@ -42,8 +42,8 @@ func CreateIngress(app Application) (v1.Ingress, error) {
 		IngressRuleValue: v1.IngressRuleValue{
 			HTTP: &v1.HTTPIngressRuleValue{
 				Paths: []v1.HTTPIngressPath{{
-					Path:     "/",
-					Backend:  v1.IngressBackend{
+					Path: "/",
+					Backend: v1.IngressBackend{
 						ServiceName: app.Name,
 						ServicePort: intstr.IntOrString{
 							IntVal: 80,

@@ -5,8 +5,8 @@ import "io"
 type Kaex struct {
 	Err io.Writer
 	Out io.Writer
-	In io.Reader
+	In  io.Reader
 
-	ConfigPath string
+	ConfigPath      string
 	TemplatesDirURL string
 }

@@ -9,19 +9,19 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use: "kaex",
+		Use:   "kaex",
 		Short: "Kubernetes Application.yaml EXpander",
-		Long: "A tool for converting a simpler application.yaml into Kubernetes resources",
+		Long:  "A tool for converting a simpler application.yaml into Kubernetes resources",
 	}
 )
 
 func Execute() error {
 	kaex := api.Kaex{
-		Err: 		rootCmd.ErrOrStderr(),
-		Out:        rootCmd.OutOrStdout(),
-		In:         rootCmd.InOrStdin(),
+		Err: rootCmd.ErrOrStderr(),
+		Out: rootCmd.OutOrStdout(),
+		In:  rootCmd.InOrStdin(),
 
-		TemplatesDirURL:    "https://raw.githubusercontent.com/oslokommune/kaex/master/templates",
+		TemplatesDirURL: "https://raw.githubusercontent.com/oslokommune/kaex/master/templates",
 	}
 
 	configPath, err := os.UserConfigDir()
