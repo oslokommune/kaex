@@ -10,7 +10,7 @@ import (
 )
 
 type ExpandOptions struct {
-	Save bool
+	Save    bool
 	PodOnly bool
 }
 
@@ -55,7 +55,7 @@ func buildExpandCommand(kaex api.Kaex) *cobra.Command {
 func write(kaex api.Kaex, app api.Application, reader io.Reader, asFile bool) error {
 	var (
 		writer io.Writer
-		err error
+		err    error
 	)
 
 	switch asFile {

@@ -13,7 +13,6 @@ import (
 var emptyMatcher, _ = regexp.Compile("^.*: (null|{})$")
 var statusMatcher, _ = regexp.Compile("^\\s*?status*:$")
 
-
 func Expand(w io.Writer, app Application, podOnly bool) error {
 	if app.Port != 0 {
 		service, err := CreateService(app)

@@ -12,20 +12,20 @@ type IngressConfig struct {
 }
 
 type Application struct {
-	Name string
+	Name      string
 	Namespace string
 
-	Image string
-	Version string
+	Image           string
+	Version         string
 	ImagePullSecret string
 
-	Url string
+	Url  string
 	Port int32
 
 	Replicas int32
 
 	Environment map[string]string
-	Volumes []map[string]string
+	Volumes     []map[string]string
 
 	Ingress IngressConfig
 }
