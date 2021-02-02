@@ -116,3 +116,76 @@ func TestExpand(t *testing.T) {
 		})
 	}
 }
+
+type ExampleResource struct {
+	Annotations map[string]string `json:"annotations"`
+}
+
+func TestWriteResources(t *testing.T) {
+	testCases := []struct {
+		name string
+
+		with ExampleResource
+	}{
+		{
+			name: "Should work should match snapshot",
+
+			with: ExampleResource{
+				Annotations: map[string]string{
+					"alb.ingress.kubernetes.io/actions.ssl-redirect": "{\"Type\": \"redirect\", \"RedirectConfig\": { \"Protocol\": \"HTTPS\", \"Port\": \"443\", \"StatusCode\": \"HTTP_301\"}}",
+					"alb.ingress.kubernetes.io/certificate-arn":      "arn:which:isnt:an:arn",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			buf := bytes.NewBufferString("")
+
+			err := api.WriteResource(buf, tc.with)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			g := goldie.New(t)
+			g.Assert(t, t.Name(), buf.Bytes())
+		})
+	}
+}
+func TestWriteCleanResources(t *testing.T) {
+	testCases := []struct {
+		name string
+
+		with ExampleResource
+	}{
+		{
+			name: "Should match snapshot when cleaned",
+
+			with: ExampleResource{
+				Annotations: map[string]string{
+					"alb.ingress.kubernetes.io/actions.ssl-redirect": "{\"Type\": \"redirect\", \"RedirectConfig\": { \"Protocol\": \"HTTPS\", \"Port\": \"443\", \"StatusCode\": \"HTTP_301\"}}",
+					"alb.ingress.kubernetes.io/certificate-arn":      "arn:which:isnt:an:arn",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			buf := bytes.NewBufferString("")
+
+			err := api.WriteResource(buf, tc.with)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			g := goldie.New(t)
+			g.Assert(t, t.Name(), buf.Bytes())
+		})
+	}
+}
