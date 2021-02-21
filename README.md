@@ -11,9 +11,15 @@ For now;
 
 ### P.S.
 This will install kaex into ~/.local/bin. Ensure that folder is in the path
-If ~/.local/bin is not in the path, run `export PATH=${PATH}:~/.local/bin` to add it.
+If ~/.local/bin is not in the path, run 
 
-To use a different folder for installation, run `make install INSTALL_DIR=preferred/dir`
+`export PATH=${PATH}:~/.local/bin`
+
+to add it.
+
+To use a different folder for installation, configure the installation directory with `INSTALL_DIR`
+
+`make install INSTALL_DIR=preferred/dir`
 
 ## Usage
 1. `kaex init > application.yaml`
