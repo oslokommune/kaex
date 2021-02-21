@@ -9,7 +9,11 @@ For now;
 2. `cd kaex`
 4. `make install`
 
-P.S.: this assumes GOBIN is added to path. E.g.: `export PATH=${PATH}:$(go env GOBIN)`
+### P.S.
+This will install kaex into ~/.local/bin. Ensure that folder is in the path
+If ~/.local/bin is not in the path, run `export PATH=${PATH}:~/.local/bin` to add it.
+
+To use a different folder for installation, run `make install INSTALL_DIR=preferred/dir`
 
 ## Usage
 1. `kaex init > application.yaml`
